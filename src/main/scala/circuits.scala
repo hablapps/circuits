@@ -56,5 +56,8 @@ object Circuit{
 
     def not(p: Const[String, Boolean]): Const[String, Boolean] =
       Const(s"!${p.getConst}")
+
+    override def xor(p1: Const[String, Boolean], p2: Const[String, Boolean]) =
+      Const(s"(${p1.getConst} xor ${p2.getConst})")
   }
 }

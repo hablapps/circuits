@@ -96,4 +96,16 @@ class CircuitsSpec extends FunSpec with Matchers{
       DNeg.run(CP.run(ex2)).value shouldBe true
     }
   }
+
+  describe("Xor interpreter"){
+
+    val XorExamples = new Examples[Xor](
+      Xor.XorCircuit.lit(true), Xor.XorCircuit.lit(false))
+    import XorExamples._
+
+    it("should work"){
+      Xor.run(ex1).getConst shouldBe "(T xor F)"
+      Xor.run(xor2).getConst shouldBe "((T xor F) xor F)"
+    }
+  }
 }
