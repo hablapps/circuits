@@ -1,0 +1,12 @@
+package circuits
+
+import Circuit.Syntax._
+
+class Examples[P[_]: Circuit](var1: P[Boolean], var2: P[Boolean]){
+
+  def ex1: P[Boolean] =
+    (var1 or var2) and not(var1 and var2)
+
+  def ex2: P[Boolean] =
+    not(not(var1)) and (not(var2) or var1)
+}
