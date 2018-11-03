@@ -1,12 +1,12 @@
 package circuits
 
 sealed abstract class CP[P[_], T]
-case class Unk[P[_], T](p: P[T]) extends CP[P, T]
-case class Lit[P[_]](b: Boolean) extends CP[P, Boolean]
 
 object CP{
+  case class Unk[P[_], T](p: P[T]) extends CP[P, T]
+  case class Lit[P[_]](b: Boolean) extends CP[P, Boolean]
 
-  def apply[P[_], T](c: CP[P, T])(implicit C: Circuit[P]): P[T] = c match {
+  def run[P[_], T](c: CP[P, T])(implicit C: Circuit[P]): P[T] = c match {
     case Unk(p) => p
     case Lit(b) => C.lit(b)
   }

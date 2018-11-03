@@ -24,6 +24,7 @@ class CircuitsSpec extends FunSpec with Matchers{
 
     it("should work"){
       ex1.getConst shouldBe "((T || F) && !(T && F))"
+      ex2.getConst shouldBe "(!!T && (!F || T))"
     }
   }
 
@@ -31,20 +32,68 @@ class CircuitsSpec extends FunSpec with Matchers{
 
     it("should work with String interpreter"){
       val CPExamples = new Examples[CP[Const[String, ?], ?]](
-        Lit(true), Lit(false))
+        CP.Lit(true), CP.Lit(false))
       import CPExamples._
 
-      CP(ex1).getConst shouldBe "T"
-      CP(ex2).getConst shouldBe "T"
+      CP.run(ex1).getConst shouldBe "T"
+      CP.run(ex2).getConst shouldBe "T"
     }
 
     it("should work with Eval interpreter"){
       val CPExamples = new Examples[CP[Eval, ?]](
-        Lit[Eval](true), Lit[Eval](false))
+        CP.Lit[Eval](true), CP.Lit[Eval](false))
       import CPExamples._
 
-      CP(ex1).value shouldBe true
-      CP(ex2).value shouldBe true
+      CP.run(ex1).value shouldBe true
+      CP.run(ex2).value shouldBe true
+    }
+  }
+
+  describe("Double negation interpreter"){
+
+    it("should work with String interpreter"){
+      val DNegExamples = new Examples[DNeg[Const[String, ?], ?]](
+        DNeg.DNegCircuit[Const[String, ?]].lit(true),
+        DNeg.DNegCircuit[Const[String, ?]].lit(false))
+      import DNegExamples._
+
+      DNeg.run(notV1).getConst shouldBe "!T"
+      DNeg.run(notnotV1).getConst shouldBe "T"
+      DNeg.run(ex1).getConst shouldBe "((T || F) && !(T && F))"
+      DNeg.run(ex2).getConst shouldBe "(T && (!F || T))"
+    }
+
+    it("should work with Eval interpreter"){
+      val DNegExamples = new Examples[DNeg[Eval, ?]](
+        DNeg.Unk(Eval.now(true)), DNeg.Unk(Eval.now(false)))
+      import DNegExamples._
+
+      DNeg.run(ex1).value shouldBe true
+      DNeg.run(ex2).value shouldBe true
+    }
+
+    it("should work with Constant propagation and Show"){
+      val CPExamples = new Examples[CP[DNeg[Const[String, ?], ?], ?]](
+        CP.CPCircuit[DNeg[Const[String, ?], ?]].lit(true),
+        CP.CPCircuit[DNeg[Const[String, ?], ?]].lit(false))
+      import CPExamples._
+
+      DNeg.run(CP.run(notV1)).getConst shouldBe "F"
+      DNeg.run(CP.run(notnotV1)).getConst shouldBe "T"
+      DNeg.run(CP.run(ex1)).getConst shouldBe "T"
+      DNeg.run(CP.run(ex2)).getConst shouldBe "T"
+    }
+
+    it("should work with Constant propagation and Eval"){
+      val CPExamples = new Examples[CP[DNeg[Eval, ?], ?]](
+        CP.CPCircuit[DNeg[Eval, ?]].lit(true),
+        CP.CPCircuit[DNeg[Eval, ?]].lit(false))
+      import CPExamples._
+
+      DNeg.run(CP.run(notV1)).value shouldBe false
+      DNeg.run(CP.run(notnotV1)).value shouldBe true
+      DNeg.run(CP.run(ex1)).value shouldBe true
+      DNeg.run(CP.run(ex2)).value shouldBe true
     }
   }
 }

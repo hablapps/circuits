@@ -27,11 +27,15 @@ object Circuit{
   import cats.Eval, cats.syntax._, cats.implicits._
 
   implicit val MetaCircular = new Circuit[Eval]{
-    def lit(b: Boolean): Eval[Boolean] = Eval.now(b)
+    def lit(b: Boolean): Eval[Boolean] =
+      Eval.now(b)
+
     def and(p1: Eval[Boolean], p2: Eval[Boolean]): Eval[Boolean] =
       (p1, p2).mapN(_ && _)
+
     def or(p1: Eval[Boolean], p2: Eval[Boolean]): Eval[Boolean] =
       (p1, p2).mapN(_ || _)
+
     def not(p: Eval[Boolean]): Eval[Boolean] =
       p.map(! _)
   }
@@ -39,13 +43,17 @@ object Circuit{
   import cats.data.Const
 
   implicit val ShowCircuit = new Circuit[Const[String, ?]]{
-    def lit(b: Boolean): Const[String, Boolean] = Const(if (b) "T" else "F")
+    def lit(b: Boolean): Const[String, Boolean] =
+      Const(if (b) "T" else "F")
+
     def and(p1: Const[String, Boolean],
       p2: Const[String, Boolean]): Const[String, Boolean] =
       Const(s"(${p1.getConst} && ${p2.getConst})")
+
     def or(p1: Const[String, Boolean],
       p2: Const[String, Boolean]): Const[String, Boolean] =
       Const(s"(${p1.getConst} || ${p2.getConst})")
+
     def not(p: Const[String, Boolean]): Const[String, Boolean] =
       Const(s"!${p.getConst}")
   }

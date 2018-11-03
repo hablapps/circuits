@@ -9,4 +9,10 @@ class Examples[P[_]: Circuit](var1: P[Boolean], var2: P[Boolean]){
 
   def ex2: P[Boolean] =
     not(not(var1)) and (not(var2) or var1)
+
+  def notnotV1: P[Boolean] =
+    not(not(var1))
+
+  def notV1: P[Boolean] =
+    not(var1)
 }
