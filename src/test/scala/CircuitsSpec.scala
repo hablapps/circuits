@@ -98,14 +98,30 @@ class CircuitsSpec extends FunSpec with Matchers{
   }
 
   describe("Xor interpreter"){
+    import cats.implicits._
 
-    val XorExamples = new Examples[Xor](
-      Xor.XorCircuit.lit(true), Xor.XorCircuit.lit(false))
+    val XorExamples = new Examples[Xor[Const[String,?],?]](
+      Circuit[Xor[Const[String,?], ?]].lit(true),
+      Circuit[Xor[Const[String,?], ?]].lit(false))
     import XorExamples._
 
     it("should work"){
       Xor.run(ex1).getConst shouldBe "(T xor F)"
       Xor.run(xor2).getConst shouldBe "((T xor F) xor F)"
+    }
+  }
+
+  describe("BNegDown interpreter"){
+    import cats.implicits._
+
+    val BNegDownExamples = new Examples[BNegDown[Const[String,?],?]](
+      Circuit[BNegDown[Const[String,?], ?]].lit(true),
+      Circuit[BNegDown[Const[String,?], ?]].lit(false))
+
+    import BNegDownExamples._
+
+    it("should work"){
+      BNegDown.run(ex3).getConst shouldBe "(!(!T && !F) || !T)"
     }
   }
 }
