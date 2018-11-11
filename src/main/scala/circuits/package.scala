@@ -1,6 +1,5 @@
 package circuits
 
-
 trait Forall[Q[_], P[_]]{
   def apply[T]: Q[P[T]]
 }

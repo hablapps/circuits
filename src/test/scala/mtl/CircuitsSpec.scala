@@ -8,28 +8,30 @@ import cats.{Eval, Id}
 class CircuitsSpec extends FunSpec with Matchers{
 
   describe("Double negation interpreter (WriterT)"){
-    import IsNeg.DNegW
+    type AnnPrg[P[_], T] = annotations.Annotated.Program[IsNeg, P, T]
+    import annotations.Annotated.Syntax._
 
     it("should work with String interpreter"){
-      val DNegWExamples = new Examples[DNegW[Const[String, ?], ?]](
-        IsNeg.DNegWCircuit[Const[String, ?]].lit(true),
-        IsNeg.DNegWCircuit[Const[String, ?]].lit(false))
-      import DNegWExamples._
+      val AnnPrgExamples = new Examples[AnnPrg[Const[String, ?], ?]](
+        IsNeg.AnnotatedCircuit[Const[String, ?]].lit(true),
+        IsNeg.AnnotatedCircuit[Const[String, ?]].lit(false))
+      import AnnPrgExamples._
 
-      IsNeg.run[Const[String, ?]].apply(notV1).getConst shouldBe "!T"
-      IsNeg.run[Const[String, ?]].apply(notnotV1).getConst shouldBe "T"
-      IsNeg.run[Const[String, ?]].apply(ex1).getConst shouldBe "((T || F) && !(T && F))"
-      IsNeg.run[Const[String, ?]].apply(ex2).getConst shouldBe "(T && (!F || T))"
+      notV1.runP[Circuit].getConst shouldBe "!T"
+      notV1.runP[Circuit].getConst shouldBe "!T"
+      notnotV1.runP[Circuit].getConst shouldBe "T"
+      ex1.runP[Circuit].getConst shouldBe "((T || F) && !(T && F))"
+      ex2.runP[Circuit].getConst shouldBe "(T && (!F || T))"
     }
 
     it("should work with Eval interpreter"){
-      val DNegWExamples = new Examples[DNegW[Eval, ?]](
-        IsNeg.DNegWCircuit[Eval].lit(true),
-        IsNeg.DNegWCircuit[Eval].lit(false))
-      import DNegWExamples._
+      val AnnPrgExamples = new Examples[AnnPrg[Eval, ?]](
+        IsNeg.AnnotatedCircuit[Eval].lit(true),
+        IsNeg.AnnotatedCircuit[Eval].lit(false))
+      import AnnPrgExamples._
 
-      IsNeg.run[Eval].apply(ex1).value shouldBe true
-      IsNeg.run[Eval].apply(ex2).value shouldBe true
+      ex1.runP[Circuit].value shouldBe true
+      ex2.runP[Circuit].value shouldBe true
     }
   }
 
