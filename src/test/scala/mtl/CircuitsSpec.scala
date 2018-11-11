@@ -8,10 +8,14 @@ import annotations.Annotated.Syntax._
 
 class CircuitsSpec extends FunSpec with Matchers{
 
+  trait **>[F[_[_], _], P[_]]{
+    type λ[T] = F[P, T]
+  }
+
   describe("Double negation interpreter (WriterT)"){
 
     it("should work with String interpreter"){
-      val IsNegExamples = new Examples[IsNeg[Const[String, ?], ?]](
+      val IsNegExamples = new Examples[(IsNeg **> Const[String, ?])#λ](
         IsNeg.AnnotatedCircuit[Const[String, ?]].lit(true),
         IsNeg.AnnotatedCircuit[Const[String, ?]].lit(false))
       import IsNegExamples._
