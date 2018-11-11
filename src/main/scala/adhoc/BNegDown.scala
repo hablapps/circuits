@@ -1,4 +1,5 @@
 package circuits
+package adhoc
 
 sealed abstract class BNegDown[P[_], T]
 

@@ -1,4 +1,5 @@
 package circuits
+package adhoc
 
 sealed abstract class CP[P[_], T]
 

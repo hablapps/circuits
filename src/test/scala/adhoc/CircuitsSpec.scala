@@ -1,4 +1,5 @@
 package circuits
+package adhoc
 
 import org.scalatest._
 import cats.data.Const

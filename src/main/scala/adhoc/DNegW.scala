@@ -1,4 +1,5 @@
 package circuits
+package adhoc
 
 import cats.evidence.Is
 
