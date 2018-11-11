@@ -26,20 +26,20 @@ object Circuit{
 
   import annotations._
 
-  abstract class Trivial[Ann[_], P[_]: Circuit](implicit
-    A: Annotated[Ann, Circuit]) extends Circuit[Annotated.Program[Ann, P, ?]]{
+  abstract class Trivial[Ann[_[_], _], P[_]: Circuit](implicit
+    A: Annotated[Ann, Circuit]) extends Circuit[Ann[P, ?]]{
     import A._
 
-    def lit(b: Boolean): Annotated.Program[Ann, P, Boolean] =
+    def lit(b: Boolean): Ann[P, Boolean] =
       inj.apply(Circuit[P].lit(b))
 
-    def and(p1: Annotated.Program[Ann, P, Boolean], p2: Annotated.Program[Ann, P, Boolean]): Annotated.Program[Ann, P, Boolean] =
+    def and(p1: Ann[P, Boolean], p2: Ann[P, Boolean]): Ann[P, Boolean] =
       inj.apply(Circuit[P].and(run.apply(p1), run.apply(p2)))
 
-    def or(p1: Annotated.Program[Ann, P, Boolean], p2: Annotated.Program[Ann, P, Boolean]): Annotated.Program[Ann, P, Boolean] =
+    def or(p1: Ann[P, Boolean], p2: Ann[P, Boolean]): Ann[P, Boolean] =
       inj.apply(Circuit[P].or(run.apply(p1), run.apply(p2)))
 
-    def not(p: Annotated.Program[Ann, P, Boolean]): Annotated.Program[Ann, P, Boolean] =
+    def not(p: Ann[P, Boolean]): Ann[P, Boolean] =
       inj.apply(Circuit[P].not(run.apply(p)))
   }
 
